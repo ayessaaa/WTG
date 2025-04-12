@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>WTG?</title>
+    <meta name="description" content="The HTML5 Herald" />
+    <meta name="author" content="kokaneka" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <style>
+    .poppins {
+      font-family: poppins;
+    }
+    .patrick {
+      font-family: "Patrick Hand";
+    }
+  </style>
+
+  <body>
+    <div id="place-app"></div>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script
+      src="https://unpkg.com/react@16/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script type="text/babel">
+      const App = (props) => {
+        return (
+          <div>
+            <div className="h-80 absolute -bottom-30 -left-10 md:w-120 w-screen bg-[#84B5D8]/40 rounded-full blur-3xl z-0"></div>
+
+            <img
+              className="w-100 mx-auto mt-10 z-10"
+              src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/c4a474afb8f10104333e53ee887e00a2574bf001_logo.png"
+              alt=""
+            />
+            <Description />
+          </div>
+        );
+      };
+
+      function Description() {
+        return (
+          <div className=" border-3 py-5 px-8 border-[#81ACED]/60 bg-[#84B5D8]/10  shadow-lg shadow-[#81ACED]/30 w-200 mx-auto rounded-lg mt-10">
+            <p className="patrick text-[#507AB9] text-2xl underline decoration-[#81ACED] decoration-wavy">
+              How it Works?
+            </p>
+            <ul className="text-xl text-[#84B5D8] patrick mt-5 mx-5">
+              <li>1. Create a wheel</li>
+              <li>
+                2. Make everyone put a place (or more) they want to hangout
+              </li>
+              <li>3. Don't let anyone see what anyone puts in the wheel</li>
+              <li>
+                4. Once everyone put down a place, you can now create the wheel
+              </li>
+              <li>
+                5. The wheel won't show any places and you can now go ahead and
+                let the wheel spin
+              </li>
+              <li>6. The wheel will decide a place for the group to go to</li>
+              <li>7. You can respin the wheel if the group doesn't want to</li>
+            </ul>
+          </div>
+        );
+      }
+      ReactDOM.render(App(), document.getElementById("place-app"));
+    </script>
+  </body>
+</html>
