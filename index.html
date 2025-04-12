@@ -13,6 +13,11 @@
       href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
   </head>
 
   <style>
@@ -21,6 +26,26 @@
     }
     .patrick {
       font-family: "Patrick Hand";
+    }
+    #myChart {
+      max-width: 180px;
+      max-height: 180px;
+      animation: mymove 5s linear infinite;
+    }
+    #myDIV {
+      margin: auto;
+      border: 1px solid black;
+      width: 200px;
+      height: 100px;
+      background-color: coral;
+      color: white;
+      
+    }
+
+    @keyframes mymove {
+      100% {
+        transform: rotate(360deg);
+      }
     }
   </style>
 
@@ -46,6 +71,8 @@
               src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/c4a474afb8f10104333e53ee887e00a2574bf001_logo.png"
               alt=""
             />
+
+            <Wheel />
             <Description />
           </div>
         );
@@ -76,7 +103,34 @@
           </div>
         );
       }
+
+      function Wheel() {
+        const ctx = document.getElementById("myChart");
+
+        new Chart(ctx, {
+          type: "pie",
+          data: {
+            datasets: [
+              {
+                data: [1, 1, 1, 1, 1],
+                backgroundColor: [
+                  "#507AB9",
+                  "#81ACED",
+                  "#84B5D8",
+                  "#A9D5F4",
+                  "#CAE5F9",
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: { events: []},
+        });
+        return <div></div>;
+      }
+
       ReactDOM.render(App(), document.getElementById("place-app"));
     </script>
+    <canvas id="myChart" height="100" width="100" class="z-10 mx-auto mt-20"></canvas>
   </body>
 </html>
