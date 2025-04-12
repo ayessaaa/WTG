@@ -28,8 +28,8 @@
       font-family: "Patrick Hand";
     }
     #myChart {
-      max-width: 180px;
-      max-height: 180px;
+      max-width: 110px;
+      max-height: 110px;
       animation: mymove 5s linear infinite;
     }
     #myDIV {
@@ -39,7 +39,6 @@
       height: 100px;
       background-color: coral;
       color: white;
-      
     }
 
     @keyframes mymove {
@@ -61,76 +60,179 @@
       crossorigin
     ></script>
     <script type="text/babel">
-      const App = (props) => {
+      function App() {
+        const [isHome, setIsHome] = React.useState(true);
+        const [placesWheel, setPlacesWheel] = React.useState([1, 1, 1, 1, 1]);
+
+        function handleCreateWheel() {
+          setIsHome(false);
+          setPlacesWheel([]);
+        }
+
+        function handleAddPlace(){
+          setPlacesWheel([...placesWheel, 1]);
+        }
+
         return (
           <div>
             <div className="h-80 absolute -bottom-30 -left-10 md:w-120 w-screen bg-[#84B5D8]/40 rounded-full blur-3xl z-0"></div>
-
-            <img
-              className="w-100 mx-auto mt-10 z-10"
-              src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/c4a474afb8f10104333e53ee887e00a2574bf001_logo.png"
-              alt=""
-            />
-
-            <Wheel />
-            <Description />
+            <Logo />
+            {isHome ? (
+              <div>
+                <Description />
+                <Button onClick={handleCreateWheel} />
+              </div>
+            ) : (
+              <Button onClick={handleAddPlace}/>
+              )}
+              <Wheel placesWheel={placesWheel} isHome={isHome} />{" "}
           </div>
         );
-      };
+      }
+
+      function Logo() {
+        return (
+          <img
+            className="w-90 mx-auto mt-10 z-10 animate__fadeIn animate__animated "
+            src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/c4a474afb8f10104333e53ee887e00a2574bf001_logo.png"
+            alt=""
+          />
+        );
+      }
 
       function Description() {
         return (
-          <div className=" border-3 py-5 px-8 border-[#81ACED]/60 bg-[#84B5D8]/10  shadow-lg shadow-[#81ACED]/30 w-200 mx-auto rounded-lg mt-10">
+          <div className=" animate__fadeIn animate__animated animate__delay-1s animate__slow border-3 py-5 px-8 border-[#81ACED]/60 bg-[#84B5D8]/10  shadow-lg shadow-[#81ACED]/30 w-200 mx-auto rounded-lg mt-10">
             <p className="patrick text-[#507AB9] text-2xl underline decoration-[#81ACED] decoration-wavy">
+              What is this?
+            </p>
+            <p className="text-xl text-[#84B5D8] patrick mt-5 mx-5">
+              WTG (where to go) is a random picker for places to hangout with
+              friends if you've got{" "}
+              <span className="text-[#507AB9]">undecisive friends</span>.
+              Basically everyone will put on places they consider going and the
+              wheel will randomly select one (if the group can't).
+              <br />
+              <br />
+              Additionally, the wheel would not show the place each person added
+              so that no one would be blamed if the place they went to sucked ;D
+              This takes the pressure off suggesting places!
+            </p>
+            <p className="patrick text-[#507AB9] text-2xl underline mt-5 decoration-[#81ACED] decoration-wavy">
               How it Works?
             </p>
             <ul className="text-xl text-[#84B5D8] patrick mt-5 mx-5">
-              <li>1. Create a wheel</li>
               <li>
-                2. Make everyone put a place (or more) they want to hangout
+                1. Make everyone put a place (or more) they want to hangout
               </li>
-              <li>3. Don't let anyone see what anyone puts in the wheel</li>
+              <li>2. Don't let anyone see what anyone puts in the wheel</li>
+              <li>4. You can now spin the wheel</li>
+              <li>5. The wheel will randomly select a place</li>
               <li>
-                4. Once everyone put down a place, you can now create the wheel
+                6.You can respin the wheel if the group doesn't want the place
               </li>
-              <li>
-                5. The wheel won't show any places and you can now go ahead and
-                let the wheel spin
-              </li>
-              <li>6. The wheel will decide a place for the group to go to</li>
-              <li>7. You can respin the wheel if the group doesn't want to</li>
             </ul>
           </div>
         );
       }
 
-      function Wheel() {
-        const ctx = document.getElementById("myChart");
+      function Button({ onClick }) {
+        return (
+          <button
+            onClick={onClick}
+            className="animate__fadeIn animate__animated animate__delay-2s flex gap-2.5 items-center bg-gradient-to-t mx-auto w-fit shadow-lg shadow-[#81ACED]/40 from-[#81ACED] to-[#507AB9] poppins font-bold tracking-wide text-white px-5 py-2 text-xl mt-10 rounded-full hover:scale-105 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-[#81ACED]/50 cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-5 stroke-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+            Create a Wheel
+          </button>
+        );
+      }
 
-        new Chart(ctx, {
-          type: "pie",
-          data: {
-            datasets: [
-              {
-                data: [1, 1, 1, 1, 1],
-                backgroundColor: [
-                  "#507AB9",
-                  "#81ACED",
-                  "#84B5D8",
-                  "#A9D5F4",
-                  "#CAE5F9",
+      function Wheel({ placesWheel, isHome }) {
+        React.useEffect(() => {
+          const canvas = document.getElementById("myChart");
+          if (!canvas) return; 
+
+          if (window.myChart instanceof Chart) {
+            window.myChart.destroy();
+            console.log("destroy")
+          }
+
+          if (isHome) {
+            const ctx = canvas.getContext("2d");
+
+            window.myChart = new Chart(ctx, {
+              type: "pie",
+              data: {
+                datasets: [
+                  {
+                    data: placesWheel,
+                    backgroundColor: [
+                      "#507AB9",
+                      "#81ACED",
+                      "#84B5D8",
+                      "#A9D5F4",
+                      "#CAE5F9",
+                    ],
+                    borderWidth: 1,
+                  },
                 ],
-                borderWidth: 1,
               },
-            ],
-          },
-          options: { events: []},
-        });
+              options: {
+                events: [],
+              },
+            });
+          } else if (!isHome && placesWheel.length > 0 && canvas) {
+            console.log("else")
+            const ctx = canvas.getContext("2d");
+
+            window.myChart = new Chart(ctx, {
+              type: "pie",
+              data: {
+                datasets: [
+                  {
+                    data: placesWheel,
+                    backgroundColor: [
+                      "#507AB9",
+                      "#81ACED",
+                      "#84B5D8",
+                      "#A9D5F4",
+                      "#CAE5F9",
+                    ],
+                    borderWidth: 1,
+                  },
+                ],
+              },
+              options: {
+                events: [], 
+              },
+            });
+          }
+        }, [placesWheel, isHome]);
+
         return <div></div>;
       }
 
-      ReactDOM.render(App(), document.getElementById("place-app"));
+      ReactDOM.render(<App />, document.getElementById("place-app"));
+      // ReactDOM.render(Button(), document.getElementById("place"));
     </script>
-    <canvas id="myChart" height="100" width="100" class="z-10 mx-auto mt-20"></canvas>
+    <div
+      class="animate__fadeIn animate__animated animate__delay-3s animate__slow"
+    >
+      <canvas id="myChart" class="z-10 mx-auto mt-5"></canvas>
+    </div>
   </body>
 </html>
