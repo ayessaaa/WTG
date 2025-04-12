@@ -28,17 +28,7 @@
       font-family: "Patrick Hand";
     }
     #myChart {
-      max-width: 110px;
-      max-height: 110px;
       animation: mymove 5s linear infinite;
-    }
-    #myDIV {
-      margin: auto;
-      border: 1px solid black;
-      width: 200px;
-      height: 100px;
-      background-color: coral;
-      color: white;
     }
 
     @keyframes mymove {
@@ -69,7 +59,7 @@
           setPlacesWheel([]);
         }
 
-        function handleAddPlace(){
+        function handleAddPlace() {
           setPlacesWheel([...placesWheel, 1]);
         }
 
@@ -80,12 +70,26 @@
             {isHome ? (
               <div>
                 <Description />
-                <Button onClick={handleCreateWheel} />
+                <Button onClick={handleCreateWheel} from="81ACED" to="507AB9">
+                  Create a Wheel
+                </Button>
               </div>
             ) : (
-              <Button onClick={handleAddPlace}/>
-              )}
-              <Wheel placesWheel={placesWheel} isHome={isHome} />{" "}
+              <div className="mb-20 flex w-fit mx-auto gap-5">
+                <Button
+                  onClick={handleAddPlace}
+                  animateDelay=""
+                  from="81ACED"
+                  to="507AB9"
+                >
+                  Add A Place
+                </Button>
+                <Button animateDelay="" from="A9D5F4" to="CAE5F9" svg="spin">
+                  Spin The Wheel
+                </Button>
+              </div>
+            )}
+            <Wheel placesWheel={placesWheel} isHome={isHome} />{" "}
           </div>
         );
       }
@@ -136,27 +140,53 @@
         );
       }
 
-      function Button({ onClick }) {
+      function Button({
+        onClick,
+        animateDelay = "animate__delay-2s",
+        className,
+        from,
+        to,
+        svg,
+        children,
+      }) {
         return (
           <button
             onClick={onClick}
-            className="animate__fadeIn animate__animated animate__delay-2s flex gap-2.5 items-center bg-gradient-to-t mx-auto w-fit shadow-lg shadow-[#81ACED]/40 from-[#81ACED] to-[#507AB9] poppins font-bold tracking-wide text-white px-5 py-2 text-xl mt-10 rounded-full hover:scale-105 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-[#81ACED]/50 cursor-pointer"
+            className={`animate__fadeIn animate__animated ${animateDelay} ${className} flex gap-2.5 items-center bg-gradient-to-t mx-auto w-fit shadow-lg shadow-[#${from}]/40 from-[#${from}] to-[#${to}] poppins font-bold tracking-wide text-white px-5 py-2 text-xl mt-10 rounded-full hover:scale-105 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-[#${to}]/50 cursor-pointer`}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-5 stroke-4"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
-            Create a Wheel
+            {svg === "spin" ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 stroke-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="size-5 stroke-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+            )}
+
+            {children}
           </button>
         );
       }
@@ -164,11 +194,14 @@
       function Wheel({ placesWheel, isHome }) {
         React.useEffect(() => {
           const canvas = document.getElementById("myChart");
-          if (!canvas) return; 
+          if (!canvas) return;
+
+          canvas.width = 110;
+          canvas.height = 110;
 
           if (window.myChart instanceof Chart) {
             window.myChart.destroy();
-            console.log("destroy")
+            console.log("destroy");
           }
 
           if (isHome) {
@@ -196,7 +229,9 @@
               },
             });
           } else if (!isHome && placesWheel.length > 0 && canvas) {
-            console.log("else")
+            canvas.width = 400;
+            canvas.height = 400;
+            console.log("else");
             const ctx = canvas.getContext("2d");
 
             window.myChart = new Chart(ctx, {
@@ -217,7 +252,9 @@
                 ],
               },
               options: {
-                events: [], 
+                responsive: false,
+                maintainAspectRatio: false,
+                events: [],
               },
             });
           }
@@ -227,7 +264,6 @@
       }
 
       ReactDOM.render(<App />, document.getElementById("place-app"));
-      // ReactDOM.render(Button(), document.getElementById("place"));
     </script>
     <div
       class="animate__fadeIn animate__animated animate__delay-3s animate__slow"
