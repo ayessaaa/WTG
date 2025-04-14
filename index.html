@@ -66,6 +66,9 @@
         const [places, setPlaces] = React.useState([]);
         const [spinNumber, setSpinNumber] = React.useState(0);
         const [isSpin, setIsSpin] = React.useState(false);
+        const [selectedPlace, setSelectedPlace] = React.useState("");
+
+        const [isSelected, setIsSelected] = React.useState(false);
 
         const wheel = document.getElementById("myChart");
         let animation;
@@ -84,6 +87,7 @@
 
         function handleSpin() {
           setIsSpin(true);
+          setIsSelected(false)
           // wheel spinning from:
           // https://dev.to/madsstoumann/wheel-of-fortune-with-css-p-pi-1ne9
 
@@ -124,9 +128,15 @@
                   "#A9D5F4",
                 ],
               });
+              setSelectedPlace(
+                places[Math.floor(Math.random() * places.length)]
+              );
+
               setIsSpin(false);
+              setIsSelected(true);
             }, 10000);
           }
+          console.log(isSpin);
         }, [isSpin]);
 
         return (
@@ -185,7 +195,11 @@
                     </div>
                   )}
                 </div>
-                <Places places={places} />
+                <Places
+                  places={places}
+                  selectedPlace={selectedPlace}
+                  selected={isSelected}
+                />
               </div>
             )}
             <Wheel placesWheel={placesWheel} isHome={isHome} />{" "}
@@ -193,14 +207,33 @@
         );
       }
 
-      function Places({ places }) {
+      function Places({ places, selected, selectedPlace }) {
         return (
-          <div className="animate__fadeIn animate__animated animate__delay-1s animate__slow py-3 px-8 border-[#81ACED]/60 bg-[#84B5D8]/10  shadow-lg shadow-[#84B5D8]/40 w-fit mx-auto rounded-xl -mt-10 mb-5">
-            <p className="patrick text-[#507AB9] text-3xl">
-              {places.length}{" "}
-              <span className="text-2xl ml-2 text-[#84B5D8] patrick">
-                total places
-              </span>
+          <div
+            className={`animate__fadeIn transition-all animate__animated animate__delay-1s animate__slow py-3 px-8   w-fit mx-auto rounded-xl -mt-10 mb-5 ${
+              selected
+                ? "bg-[#507AB9]  shadow-lg shadow-[#507AB9]/40 scale-105"
+                : "bg-[#84B5D8]/10  shadow-lg shadow-[#84B5D8]/40"
+            }`}
+          >
+            <p className={`patrick ${selected ? "text-white text-4xl" : "text-[#507AB9] text-3xl"} `}>
+              {selected ? (
+                selectedPlace
+              ) : places.length > 0 ? (
+                <span>
+                  {places.length}
+                  <span className="text-2xl ml-2 text-[#84B5D8] patrick">
+                    total places
+                  </span>
+                </span>
+              ) : (
+                <span>
+                  0
+                  <span className="text-2xl ml-2 text-[#84B5D8] patrick">
+                    total places
+                  </span>
+                </span>
+              )}
             </p>
           </div>
         );
