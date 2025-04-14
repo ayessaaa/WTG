@@ -18,6 +18,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
+    <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
   </head>
 
   <style>
@@ -70,6 +71,8 @@
         let animation;
         let previousEndDegree = 0;
 
+        const jsConfetti = new JSConfetti();
+
         function handleCreateWheel() {
           setIsHome(false);
           setPlacesWheel([]);
@@ -80,6 +83,7 @@
         }
 
         function handleSpin() {
+          setIsSpin(true);
           // wheel spinning from:
           // https://dev.to/madsstoumann/wheel-of-fortune-with-css-p-pi-1ne9
 
@@ -105,9 +109,25 @@
           );
 
           previousEndDegree = newEndDegree;
-
-          setIsSpin(true);
         }
+
+        React.useEffect(() => {
+          if (isSpin) {
+            const timer = setTimeout(() => {
+              jsConfetti.addConfetti({
+                confettiColors: [
+                  "#9DA9F5",
+                  "#9ABFF6",
+                  "#507AB9",
+                  "#CAE5F9",
+                  "#84B5D8",
+                  "#A9D5F4",
+                ],
+              });
+              setIsSpin(false);
+            }, 10000);
+          }
+        }, [isSpin]);
 
         return (
           <div>
@@ -115,7 +135,6 @@
             <Logo />
             {isHome ? (
               <div>
-
                 <Description />
                 <Button
                   onClick={handleCreateWheel}
@@ -166,7 +185,7 @@
                     </div>
                   )}
                 </div>
-                <Places places={places}/>
+                <Places places={places} />
               </div>
             )}
             <Wheel placesWheel={placesWheel} isHome={isHome} />{" "}
@@ -174,10 +193,15 @@
         );
       }
 
-      function Places({places}) {
+      function Places({ places }) {
         return (
           <div className="animate__fadeIn animate__animated animate__delay-1s animate__slow py-3 px-8 border-[#81ACED]/60 bg-[#84B5D8]/10  shadow-lg shadow-[#84B5D8]/40 w-fit mx-auto rounded-xl -mt-10 mb-5">
-            <p  className="patrick text-[#507AB9] text-3xl">{places.length} <span className="text-2xl ml-2 text-[#84B5D8] patrick">total places</span></p>
+            <p className="patrick text-[#507AB9] text-3xl">
+              {places.length}{" "}
+              <span className="text-2xl ml-2 text-[#84B5D8] patrick">
+                total places
+              </span>
+            </p>
           </div>
         );
       }
