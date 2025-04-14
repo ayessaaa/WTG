@@ -146,7 +146,6 @@
               setIsButtonDisabled(false);
             }, 10000);
           }
-          console.log(isSpin);
         }, [isSpin]);
 
         return (
@@ -438,7 +437,6 @@
 
           if (window.myChart instanceof Chart) {
             window.myChart.destroy();
-            console.log("destroy");
           }
 
           if (isHome) {
@@ -468,7 +466,6 @@
           } else if (!isHome && placesWheel.length > 0 && canvas) {
             canvas.width = 400;
             canvas.height = 400;
-            console.log("else");
             const ctx = canvas.getContext("2d");
 
             window.myChart = new Chart(ctx, {
