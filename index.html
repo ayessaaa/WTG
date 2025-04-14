@@ -27,8 +27,15 @@
     .patrick {
       font-family: "Patrick Hand";
     }
+
     #myChart {
-      animation: mymove 5s linear infinite;
+      animation-name: mymove;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .animation-time {
+      animation-duration: 5s;
     }
 
     @keyframes mymove {
@@ -56,6 +63,12 @@
         const [isAdd, setIsAdd] = React.useState(false);
         const [place, setPlace] = React.useState("");
         const [places, setPlaces] = React.useState([]);
+        const [spinNumber, setSpinNumber] = React.useState(0);
+        const [isSpin, setIsSpin] = React.useState(false);
+
+        const wheel = document.getElementById("myChart");
+        let animation;
+        let previousEndDegree = 0;
 
         function handleCreateWheel() {
           setIsHome(false);
@@ -66,12 +79,43 @@
           setIsAdd(true);
         }
 
+        function handleSpin() {
+          // wheel spinning from:
+          // https://dev.to/madsstoumann/wheel-of-fortune-with-css-p-pi-1ne9
+
+          if (animation) {
+            animation.cancel(); // Reset the animation if it already exists
+          }
+
+          const randomAdditionalDegrees = Math.random() * 360 + 1800;
+          const newEndDegree = previousEndDegree + randomAdditionalDegrees;
+
+          animation = wheel.animate(
+            [
+              { transform: `rotate(${previousEndDegree}deg)` },
+              { transform: `rotate(${newEndDegree}deg)` },
+            ],
+            {
+              duration: 10000,
+              direction: "normal",
+              easing: "cubic-bezier(0.440, -0.205, 0.000, 1.130)",
+              fill: "forwards",
+              iterations: 1,
+            }
+          );
+
+          previousEndDegree = newEndDegree;
+
+          setIsSpin(true);
+        }
+
         return (
           <div>
             <div className="h-80 absolute -bottom-30 -left-10 md:w-120 w-screen bg-[#84B5D8]/40 rounded-full blur-3xl z-0"></div>
             <Logo />
             {isHome ? (
               <div>
+
                 <Description />
                 <Button
                   onClick={handleCreateWheel}
@@ -83,46 +127,57 @@
                 </Button>
               </div>
             ) : (
-              <div className="mb-20 flex w-fit mx-auto gap-5">
-                {isAdd && (
-                  <Input
-                    place={place}
-                    setPlace={setPlace}
-                    handleAddPlace={handleAddPlace}
-                    setPlaces={setPlaces}
-                    places={places}
-                    setIsAdd={setIsAdd}
-                    setPlacesWheel={setPlacesWheel}
-                    placesWheel={placesWheel}
-                  />
-                )}
+              <div>
+                <div className="mb-20 flex w-fit mx-auto gap-5">
+                  {isAdd && (
+                    <Input
+                      place={place}
+                      setPlace={setPlace}
+                      handleAddPlace={handleAddPlace}
+                      setPlaces={setPlaces}
+                      places={places}
+                      setIsAdd={setIsAdd}
+                      setPlacesWheel={setPlacesWheel}
+                      placesWheel={placesWheel}
+                    />
+                  )}
 
-                {!isAdd && (
-                  <div className="flex w-fit mx-auto gap-5">
-                    <Button
-                      onClick={handleAddPlace}
-                      animateDelay=""
-                      from="81ACED"
-                      to="507AB9"
-                      className="mt-10"
-                    >
-                      Add A Place
-                    </Button>
-                    <Button
-                      animateDelay=""
-                      from="A9D5F4"
-                      to="CAE5F9"
-                      className="mt-10"
-                      svg="spin"
-                    >
-                      Spin The Wheel
-                    </Button>
-                  </div>
-                )}
+                  {!isAdd && (
+                    <div className="flex w-fit mx-auto gap-5">
+                      <Button
+                        onClick={handleAddPlace}
+                        animateDelay=""
+                        from="81ACED"
+                        to="507AB9"
+                        className="mt-10"
+                      >
+                        Add A Place
+                      </Button>
+                      <Button
+                        animateDelay=""
+                        from="A9D5F4"
+                        to="CAE5F9"
+                        className="mt-10"
+                        svg="spin"
+                        onClick={handleSpin}
+                      >
+                        Spin The Wheel
+                      </Button>
+                    </div>
+                  )}
+                </div>
+                <Places places={places}/>
               </div>
             )}
             <Wheel placesWheel={placesWheel} isHome={isHome} />{" "}
-            
+          </div>
+        );
+      }
+
+      function Places({places}) {
+        return (
+          <div className="animate__fadeIn animate__animated animate__delay-1s animate__slow py-3 px-8 border-[#81ACED]/60 bg-[#84B5D8]/10  shadow-lg shadow-[#84B5D8]/40 w-fit mx-auto rounded-xl -mt-10 mb-5">
+            <p  className="patrick text-[#507AB9] text-3xl">{places.length} <span className="text-2xl ml-2 text-[#84B5D8] patrick">total places</span></p>
           </div>
         );
       }
@@ -341,7 +396,10 @@
     <div
       class="animate__fadeIn animate__animated animate__delay-3s animate__slow"
     >
-      <canvas id="myChart" class="z-10 mx-auto mt-5"></canvas>
+      <canvas
+        id="myChart"
+        class="z-10 mx-auto mt-10 animation-time transition-all"
+      ></canvas>
     </div>
   </body>
 </html>
